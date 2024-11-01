@@ -1,0 +1,37 @@
+TITLE:serial mediation model
+
+DATA:FILE IS 1.csv;
+
+VARIABLE:
+  NAMES ARE original income XV XP M1 M2 Y;
+  MISSING=ALL(99); ! 定义缺失值
+  usevariables are original income XV XP M1 M2 Y;
+
+ANALYSIS: BOOTSTRAP=5000; 
+          ! 采用Bootstrap法进行中介效应检验，抽样次数1000/2000/5000
+          ! 有文献依据即可
+          CONVERGENCE=0.001;
+
+         
+MODEL:  
+        
+        Y ON M1 M2 original income;
+
+        Y ON XP XV;
+
+        XV ON M1 original income;
+        
+        XP ON M1 original income;
+
+        M2 ON XP XV original income;
+
+        M2 ON M1;
+
+
+    MODEL INDIRECT:
+
+    Y IND M1;!Y--XV间接效应
+
+    
+OUTPUT:STDYX CINT(bcbootstrap); 
+        ! 输出样本统计量、标准化值、修正系数、置信区间
